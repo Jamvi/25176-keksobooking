@@ -18,6 +18,10 @@ var LOCATION_MIN_X = 300;
 var LOCATION_MAX_X = 900;
 var LOCATION_MIN_Y = 150;
 var LOCATION_MAX_Y = 500;
+var MAP_ELEMENT = document.querySelector('.map');
+var MAP_PINS_ELEMENT = MAP_ELEMENT.querySelector('.map__pins');
+var TEMPLATE = document.querySelector('template').content;
+var PIN_TEMPLATE = TEMPLATE.querySelector('.map__pin');
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -58,35 +62,39 @@ function createAvatars(count) {
   return links;
 }
 
-function createAdvertisement(options) {
+function createAdvertisement(advertisementsList, options) {
+  var advertisementsCatalog = [];
 
-  var locationX = getRandomInt(options.locationMinX, options.locationMaxX);
-  var locationY = getRandomInt(options.locationMinY, options.locationMaxY);
+  for (var i = 0; i < OFFERS_NUMBER; i++) {
+    var locationX = getRandomInt(options.locationMinX, options.locationMaxX);
+    var locationY = getRandomInt(options.locationMinY, options.locationMaxY);
 
-  var advertisement = {
-    'author': {
-      'avatar': getUniqueElement(options.authorAvatars)
-    },
-    'offer': {
-      'title': getUniqueElement(options.offerTitles),
-      'address': locationX + ', ' + locationY,
-      'price': getRandomInt(options.offerMinPrice, options.offerMaxPrice),
-      'type': getRandomElement(options.offerTypes),
-      'rooms': getRandomInt(options.offerMinRooms, options.offerMaxRooms),
-      'guests': getRandomInt(options.offerMinGuests, options.offerMaxGuests),
-      'checkin': getRandomElement(options.offerCheckInTime),
-      'checkout': getRandomElement(options.offerCheckOutTime),
-      'features': options.offerFeatures.slice(0, getRandomInt(0, options.offerFeatures.length)),
-      'description': '',
-      'photos': shuffleArray(options.offerPhotos)
-    },
-    'location': {
-      'x': locationX,
-      'y': locationY
-    }
-  };
+    var advertisement = {
+      author: {
+        avatar: getUniqueElement(options.authorAvatars)
+      },
+      offer: {
+        title: getUniqueElement(options.offerTitles),
+        address: locationX + ', ' + locationY,
+        price: getRandomInt(options.offerMinPrice, options.offerMaxPrice),
+        type: getRandomElement(options.offerTypes),
+        rooms: getRandomInt(options.offerMinRooms, options.offerMaxRooms),
+        guests: getRandomInt(options.offerMinGuests, options.offerMaxGuests),
+        checkin: getRandomElement(options.offerCheckInTime),
+        checkout: getRandomElement(options.offerCheckOutTime),
+        features: options.offerFeatures.slice(0, getRandomInt(0, options.offerFeatures.length)),
+        description: '',
+        photos: shuffleArray(options.offerPhotos)
+      },
+      location: {
+        x: locationX,
+        y: locationY
+      }
+    };
+    advertisementsCatalog[i] = advertisement;
 
-  return advertisement;
+  }
+  return advertisementsCatalog;
 }
 
 var mapSection = document.querySelector('.map');
@@ -111,3 +119,26 @@ var advertisements = createAdvertisement(OFFERS_NUMBER, {
   locationMinY: LOCATION_MIN_Y,
   locationMaxY: LOCATION_MAX_Y
 });
+
+function renderPin(pin, template) {
+  var pinElement = template.cloneNode(true);
+
+  pinElement.style.left = (pin.location.x) + 'px';
+  pinElement.style.top = (pin.location.y) + 'px';
+
+  pinElement.querySelector('img').setAttribute('src', pin.author.avatar);
+
+  return pinElement;
+}
+
+function renderPins(pinsList, pinsElement, pinTemplate) {
+  var fragment = document.createDocumentFragment();
+
+  for (var j = 0; j < pinsList.length; j++) {
+    fragment.appendChild(renderPin(pinsList[j], pinTemplate));
+  }
+
+  pinsElement.appendChild(fragment);
+}
+
+renderPins(advertisements, MAP_PINS_ELEMENT, PIN_TEMPLATE);
