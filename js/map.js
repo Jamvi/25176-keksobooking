@@ -191,9 +191,6 @@ function renderCard(card, cardTemplate) {
   MAP_ELEMENT.insertBefore(fragment, MAP_FILTERS_ELEMENT);
 }
 
-var mapSection = document.querySelector('.map');
-mapSection.classList.remove('map--faded');
-
 var authorAvatars = AUTHOR_AVATARS.slice();
 var offerTitles = OFFER_TITLES.slice();
 
@@ -217,6 +214,26 @@ var advertisements = createAdvertisements({
   locationMaxY: LOCATION_MAX_Y
 });
 
-renderPins(advertisements, MAP_PINS_ELEMENT, PIN_TEMPLATE);
+//renderPins(advertisements, MAP_PINS_ELEMENT, PIN_TEMPLATE);
 
-renderCard(advertisements[0], CARD_TEMPLATE);
+//renderCard(advertisements[0], CARD_TEMPLATE);
+
+var mainMapPin = document.querySelector(".map__pin--main");
+
+mainMapPin.addEventListener('mouseup', dragMainPinFirst);
+
+function dragMainPinFirst() {
+  var mapSection = document.querySelector('.map');
+  var noticeForm = document.querySelector('.notice__form');
+
+  mapSection.classList.remove('map--faded');
+  noticeForm.classList.remove('notice__form--disabled');
+  var noticeFormFieldsets = noticeForm.querySelectorAll('fieldset');
+
+  for(var i = 0; i < noticeFormFieldsets.length; i++) {
+    noticeFormFieldsets[i].removeAttribute('disabled');
+  }
+
+  mainMapPin.removeEventListener('mouseup', dragMainPinFirst);
+}
+
