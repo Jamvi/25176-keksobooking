@@ -260,7 +260,8 @@ function dragMainPin() {
 
   renderPins(advertisements, MAP_PINS_ELEMENT, PIN_TEMPLATE);
 
-  MAIN_MAP_PIN.removeEventListener('mouseup', dragMainPin);
+  onHousingTypeChange();
+  onRoomsChange();
 }
 
 getPinPosition(MAIN_MAP_PIN, MAIN_PIN_SIZE, MAIN_PIN_POINTER_HEIGHT, NOTICE_ADDRESS, true);
@@ -324,12 +325,13 @@ function onRoomsChange() {
 
 var FORM_RESET = NOTICE_FORM.querySelector('.form__reset');
 
-FORM_RESET.addEventListener('click', function() {
+FORM_RESET.addEventListener('click', function(evt) {
+  evt.preventDefault();
+
+  NOTICE_FORM.reset();
 
   removeChildren(MAP_ELEMENT, '.map__card');
   removeChildren(MAP_PINS_ELEMENT, '.map__pin:not(.map__pin--main)');
-
-  NOTICE_FORM.reset();
 
   MAP_ELEMENT.classList.add('map--faded');
   NOTICE_FORM.classList.add('notice__form--disabled');
