@@ -142,7 +142,7 @@ function renderPins(pinsList, pinsElement, pinTemplate) {
 function removeChildren(element, selector) {
 
   var children = [];
-  if (children) {
+  if (selector) {
     children = element.querySelectorAll(selector);
   } else {
     children = element.children;
