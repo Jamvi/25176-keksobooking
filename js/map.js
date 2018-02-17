@@ -142,9 +142,9 @@ function renderPins(pinsList, pinsElement, pinTemplate) {
 function removeChildren(element, selector) {
 
   var children = [];
-  if(children) {
+  if (children) {
     children = element.querySelectorAll(selector);
-  } else{
+  } else {
     children = element.children;
   }
   for (var i = children.length - 1; i >= 0; i--) {
@@ -154,7 +154,7 @@ function removeChildren(element, selector) {
 }
 
 function renderFeatures(list, element) {
-  removeChildren(element);
+  removeChildren(element, null);
 
   for (var i = 0; i < list.length; i++) {
     element.innerHTML += '<li class="feature feature--' + list[i] + '"></li>';
@@ -173,7 +173,7 @@ function renderCard(card, cardTemplate) {
 
   var currentCard = document.querySelector('article.map__card');
 
-  if(currentCard) {
+  if (currentCard) {
     currentCard.remove();
   }
 
@@ -262,6 +262,7 @@ function dragMainPin() {
 
   onHousingTypeChange();
   onRoomsChange();
+  onSyncTimeChange('checkin');
 }
 
 getPinPosition(MAIN_MAP_PIN, MAIN_PIN_SIZE, MAIN_PIN_POINTER_HEIGHT, NOTICE_ADDRESS, true);
@@ -281,14 +282,14 @@ function onHousingTypeChange() {
   var price = document.querySelector('#price');
   var optionSelected = type.options[type.selectedIndex].value;
 
-  price.setAttribute("min", housingTypes[optionSelected]);
+  price.setAttribute('min', housingTypes[optionSelected]);
 }
 
 function onSyncTimeChange(type) {
   var timeIn = document.querySelector('#timein');
   var timeOut = document.querySelector('#timeout');
 
-  if(type === 'checkin') {
+  if (type === 'checkin') {
     timeOut.value = timeIn.value;
   } else {
     timeIn.value = timeOut.value;
@@ -325,7 +326,7 @@ function onRoomsChange() {
 
 var FORM_RESET = NOTICE_FORM.querySelector('.form__reset');
 
-FORM_RESET.addEventListener('click', function(evt) {
+FORM_RESET.addEventListener('click', function (evt) {
   evt.preventDefault();
 
   NOTICE_FORM.reset();
