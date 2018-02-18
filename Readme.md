@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Егор Тараканов](https://up.htmlacademy.ru/javascript/12/user/25176).
-* Наставник: [Птетька Волобуев](https://up.htmlacademy.ru/javascript/12/user/635515).
+* Наставник: [Магомед Кандаев](https://up.htmlacademy.ru/javascript/12/user/161600).
 
 ---
 
