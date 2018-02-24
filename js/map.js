@@ -35,6 +35,8 @@
 
   function dragMainPin(evt) {
 
+    var disabledMap = (MAP.className.indexOf('map--faded') !== -1);
+
     var startCoords = {
       x: evt.clientX,
       y: evt.clientY
@@ -77,16 +79,27 @@
       document.removeEventListener('mouseup', onMouseUp);
     };
 
+    getPinPosition(false);
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+
+    if (disabledMap) {
+      enableMap();
+    }
+  }
+
+  function enableMap() {
     MAP.classList.remove('map--faded');
 
     window.form.switchOnForm();
 
-    getPinPosition(false);
+    window.backend.load(function (data) {
+      renderPins(data, MAP_PINS, PIN_TEMPLATE);
+    }, function (errorMessage) {
+      window.toast.message(errorMessage);
+    });
 
-    renderPins(window.data.advertisements, MAP_PINS, PIN_TEMPLATE);
-
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
   }
 
   getPinPosition(true);
