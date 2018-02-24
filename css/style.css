@@ -854,3 +854,29 @@ textarea:focus
 {
     background-position: -10px -10px;
 }
+
+.toast {
+  min-width: 200px;
+  position: fixed;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 3;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 5px 1px #555;
+  border-radius: 4px;
+  cursor: pointer;
+  animation: appearance 700ms ease-out forwards;
+}
+
+@keyframes appearance {
+  0% {
+    top: -200px;
+  }
+
+  100% {
+    top: 100px;
+  }
+}

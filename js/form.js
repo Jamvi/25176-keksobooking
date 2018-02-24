@@ -66,7 +66,7 @@
   noticeRoomNumber.addEventListener('change', onRoomsChange);
   noticeRoomCapacity.addEventListener('change', onRoomsChange);
 
-  var switchOnForm = function () {
+  function switchOnForm() {
     var noticeFormFieldsets = noticeForm.querySelectorAll('fieldset');
     noticeForm.classList.remove('notice__form--disabled');
 
@@ -77,18 +77,29 @@
     onHousingTypeChange();
     onRoomsChange();
     onSyncTimeInChange();
-  };
+  }
+
+  function disableForm() {
+    noticeForm.reset();
+    noticeForm.classList.add('notice__form--disabled');
+    window.map.disableMap();
+  }
 
   var formReset = noticeForm.querySelector('.form__reset');
 
   formReset.addEventListener('click', function (evt) {
     evt.preventDefault();
+    disableForm();
+  });
 
-    noticeForm.reset();
-
-    noticeForm.classList.add('notice__form--disabled');
-
-    window.map.disableMap();
+  noticeForm.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.backend.save(new FormData(noticeForm), function () {
+      window.toast.message('Поздравляем, объявление создано!');
+      disableForm();
+    }, function (errorMessage) {
+      window.toast.message(errorMessage);
+    });
   });
 
   window.form = {

@@ -35,6 +35,8 @@
 
   function dragMainPin(evt) {
 
+    var disabledMap = (MAP.className.indexOf('map--faded') !== -1);
+
     var startCoords = {
       x: evt.clientX,
       y: evt.clientY
@@ -77,29 +79,26 @@
       document.removeEventListener('mouseup', onMouseUp);
     };
 
+    getPinPosition(false);
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+
+    if (disabledMap) {
+      enableMap();
+    }
+  }
+
+  function enableMap() {
     MAP.classList.remove('map--faded');
 
     window.form.switchOnForm();
 
-    getPinPosition(false);
-
-    //renderPins(window.data.advertisements, MAP_PINS, PIN_TEMPLATE);
-
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-  }
-
-  function successHandler(data) {
-    var advertisements = [];
-    var advertisementsList = data.slice();
-
-    for (var i = 0; i < 10; i++) {
-      advertisements.push(window.util.getUniqueElement(advertisementsList));
-    }
-
-    renderPins(advertisements, MAP_PINS, PIN_TEMPLATE);
-
-    //MAP.classList.remove('map--faded');
+    window.backend.load(function (data) {
+      renderPins(data, MAP_PINS, PIN_TEMPLATE);
+    }, function (errorMessage) {
+      window.toast.message(errorMessage);
+    });
 
   }
 
@@ -113,10 +112,6 @@
     MAP.classList.add('map--faded');
     getPinPosition(true);
   }
-
-  window.backend.load(successHandler, function (errorMessage) {
-    window.error.errorHandler(errorMessage);
-  });
 
   window.map = {
     getPinPosition: getPinPosition,
