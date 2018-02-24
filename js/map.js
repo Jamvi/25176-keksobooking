@@ -83,10 +83,24 @@
 
     getPinPosition(false);
 
-    renderPins(window.data.advertisements, MAP_PINS, PIN_TEMPLATE);
+    //renderPins(window.data.advertisements, MAP_PINS, PIN_TEMPLATE);
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
+  }
+
+  function successHandler(data) {
+    var advertisements = [];
+    var advertisementsList = data.slice();
+
+    for (var i = 0; i < 10; i++) {
+      advertisements.push(window.util.getUniqueElement(advertisementsList));
+    }
+
+    renderPins(advertisements, MAP_PINS, PIN_TEMPLATE);
+
+    //MAP.classList.remove('map--faded');
+
   }
 
   getPinPosition(true);
@@ -99,6 +113,10 @@
     MAP.classList.add('map--faded');
     getPinPosition(true);
   }
+
+  window.backend.load(successHandler, function (errorMessage) {
+    window.error.errorHandler(errorMessage);
+  });
 
   window.map = {
     getPinPosition: getPinPosition,
