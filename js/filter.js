@@ -32,7 +32,7 @@
       mapFilters.features[fkey] = checkboxes[j].checked;
     }
 
-    window.map.renderPins();
+    window.util.debounce(window.map.renderPins);
   }
 
   function checkFilters(ad) {
