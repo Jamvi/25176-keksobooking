@@ -13,6 +13,8 @@
   var mainPinPointerHeight = parseInt(getComputedStyle(mainPin, ':after').getPropertyValue('border-top-width'), 10);
   var noticeAddress = document.querySelector('#address');
 
+  var offers = [];
+
   function renderPins(pinsList, pinsElement, pinTemplate) {
     var fragment = document.createDocumentFragment();
 
@@ -91,11 +93,14 @@
 
   function enableMap() {
     MAP.classList.remove('map--faded');
+    window.filter.activate();
 
     window.form.switchOnForm();
 
     window.backend.load(function (data) {
-      renderPins(data, MAP_PINS, PIN_TEMPLATE);
+      offers = data;
+      var filteredAds = data.filter(window.filter.check);
+      renderPins(filteredAds, MAP_PINS, PIN_TEMPLATE);
     }, function (errorMessage) {
       window.toast.message(errorMessage);
     });
@@ -115,7 +120,9 @@
 
   window.map = {
     getPinPosition: getPinPosition,
-    disableMap: disableMap
+    disableMap: disableMap,
+    renderPins: renderPins,
+    offers: offers
   };
 
 })();
