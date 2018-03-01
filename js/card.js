@@ -4,7 +4,6 @@
   var OFFER_TYPES = {flat: 'Квартира', house: 'Дом', bungalo: 'Бунгало'};
   var MAP_ELEMENT = document.querySelector('.map');
   var MAP_FILTERS_ELEMENT = MAP_ELEMENT.querySelector('.map__filters-container');
-
   function renderFeatures(list, element) {
     window.util.removeChildren(element, null);
 
@@ -23,11 +22,7 @@
 
   function renderCard(card, cardTemplate) {
 
-    var currentCard = document.querySelector('article.map__card');
-
-    if (currentCard) {
-      currentCard.remove();
-    }
+    clearCard();
 
     var cardElement = cardTemplate.cloneNode(true);
 
@@ -62,9 +57,18 @@
     renderPictures(card.offer.photos, cardPictures);
 
     MAP_ELEMENT.insertBefore(cardElement, MAP_FILTERS_ELEMENT);
+
+  }
+
+  function clearCard() {
+    var currentCard = document.querySelector('article.map__card');
+    if (currentCard) {
+      currentCard.remove();
+    }
   }
 
   window.card = {
-    renderCard: renderCard
+    renderCard: renderCard,
+    clearCard: clearCard
   };
 })();

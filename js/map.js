@@ -1,26 +1,41 @@
 'use strict';
 
 (function () {
-
   var MAP = document.querySelector('.map');
   var MAP_PINS = MAP.querySelector('.map__pins');
   var TEMPLATE = document.querySelector('template').content;
   var PIN_TEMPLATE = TEMPLATE.querySelector('.map__pin');
+  var PIN_AMOUNT = 5;
   var PIN_CENTER = 25;
   var PIN_BOTTOM = 70;
   var mainPin = document.querySelector('.map__pin--main');
   var mainPinHeight = parseInt(getComputedStyle(mainPin).getPropertyValue('height'), 10);
   var mainPinPointerHeight = parseInt(getComputedStyle(mainPin, ':after').getPropertyValue('border-top-width'), 10);
   var noticeAddress = document.querySelector('#address');
+  var offers = [];
 
-  function renderPins(pinsList, pinsElement, pinTemplate) {
+  function renderPins() {
+    window.util.removeChildren(MAP_PINS, '.map__pin:not(.map__pin--main)');
+    window.card.clearCard();
+
+    var filteredAds = offers.filter(window.filter.check).sort(function (first, second) {
+      var distanceFirst = Math.sqrt(Math.pow(first.location.x - getPinPosition().x, 2) + Math.pow(first.location.y - getPinPosition().y, 2));
+      var distanceSecond = Math.sqrt(Math.pow(second.location.x - getPinPosition().x, 2) + Math.pow(second.location.y - getPinPosition().y, 2));
+      return distanceFirst - distanceSecond;
+    });
+
     var fragment = document.createDocumentFragment();
 
-    for (var j = 0; j < pinsList.length; j++) {
-      fragment.appendChild(window.pin.renderPin(pinsList[j], pinTemplate, PIN_CENTER, PIN_BOTTOM));
+    var maxAmount = PIN_AMOUNT;
+    if (PIN_AMOUNT > filteredAds.length) {
+      maxAmount = filteredAds.length;
     }
 
-    pinsElement.appendChild(fragment);
+    for (var j = 0; j < maxAmount; j++) {
+      fragment.appendChild(window.pin.renderPin(filteredAds[j], PIN_TEMPLATE, PIN_CENTER, PIN_BOTTOM));
+    }
+
+    MAP_PINS.appendChild(fragment);
   }
 
   function getPinPosition(firstRun) {
@@ -31,6 +46,7 @@
       pinY = mainPin.offsetTop + mainPinHeight / 2 + mainPinPointerHeight;
     }
     noticeAddress.value = pinX + ', ' + pinY;
+    return {x: pinX, y: pinY};
   }
 
   function dragMainPin(evt) {
@@ -70,6 +86,8 @@
       mainPin.style.left = dialogX + 'px';
       mainPin.style.top = dialogY + 'px';
 
+      window.util.debounce(renderPins);
+
     };
 
     var onMouseUp = function (upEvt) {
@@ -91,11 +109,13 @@
 
   function enableMap() {
     MAP.classList.remove('map--faded');
+    window.filter.activate();
 
     window.form.switchOnForm();
 
     window.backend.load(function (data) {
-      renderPins(data, MAP_PINS, PIN_TEMPLATE);
+      offers = data;
+      renderPins();
     }, function (errorMessage) {
       window.toast.message(errorMessage);
     });
@@ -107,7 +127,7 @@
   mainPin.addEventListener('mousedown', dragMainPin);
 
   function disableMap() {
-    window.util.removeChildren(MAP, '.map__card');
+    window.card.clearCard();
     window.util.removeChildren(MAP_PINS, '.map__pin:not(.map__pin--main)');
     MAP.classList.add('map--faded');
     getPinPosition(true);
@@ -115,7 +135,8 @@
 
   window.map = {
     getPinPosition: getPinPosition,
-    disableMap: disableMap
+    disableMap: disableMap,
+    renderPins: renderPins
   };
 
 })();

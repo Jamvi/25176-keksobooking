@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var DEBOUNCE_INTERVAL = 500;
+
   function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
@@ -51,12 +53,21 @@
 
   }
 
+  var lastTimeout;
+  var debounce = function (fun) {
+    if (lastTimeout) {
+      window.clearTimeout(lastTimeout);
+    }
+    lastTimeout = window.setTimeout(fun, DEBOUNCE_INTERVAL);
+  };
+
   window.util = {
     getRandomInt: getRandomInt,
     getRandomElement: getRandomElement,
     getUniqueElement: getUniqueElement,
     shuffleArray: shuffleArray,
     getRandomArrayLength: getRandomArrayLength,
-    removeChildren: removeChildren
+    removeChildren: removeChildren,
+    debounce: debounce
   };
 })();
