@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var ESC_KEYCODE = 27;
   var DEBOUNCE_INTERVAL = 500;
 
   function getRandomInt(min, max) {
@@ -53,13 +54,19 @@
 
   }
 
+  function isEscEvent(evt, action) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      action();
+    }
+  }
+
   var lastTimeout;
-  var debounce = function (fun) {
+  function debounce(fun) {
     if (lastTimeout) {
       window.clearTimeout(lastTimeout);
     }
     lastTimeout = window.setTimeout(fun, DEBOUNCE_INTERVAL);
-  };
+  }
 
   window.util = {
     getRandomInt: getRandomInt,
@@ -68,6 +75,7 @@
     shuffleArray: shuffleArray,
     getRandomArrayLength: getRandomArrayLength,
     removeChildren: removeChildren,
+    isEscEvent: isEscEvent,
     debounce: debounce
   };
 })();

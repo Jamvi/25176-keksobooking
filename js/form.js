@@ -71,7 +71,7 @@
     noticeForm.classList.remove('notice__form--disabled');
 
     for (var i = 0; i < noticeFormFieldsets.length; i++) {
-      noticeFormFieldsets[i].removeAttribute('disabled');
+      noticeFormFieldsets[i].disabled = false;
     }
 
     onHousingTypeChange();
@@ -82,6 +82,11 @@
   function disableForm() {
     noticeForm.reset();
     noticeForm.classList.add('notice__form--disabled');
+
+    var noticeFormFieldsets = noticeForm.querySelectorAll('fieldset');
+    for (var i = 0; i < noticeFormFieldsets.length; i++) {
+      noticeFormFieldsets[i].disabled = true;
+    }
     window.map.disableMap();
   }
 
