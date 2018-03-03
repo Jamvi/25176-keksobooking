@@ -8,9 +8,12 @@
   var PIN_AMOUNT = 5;
   var PIN_CENTER = 25;
   var PIN_BOTTOM = 70;
+  var MAP_FILTERS = document.querySelector('.map__filters');
+
   var mainPin = document.querySelector('.map__pin--main');
-  var mainPinHeight = parseInt(getComputedStyle(mainPin).getPropertyValue('height'), 10);
-  var mainPinPointerHeight = parseInt(getComputedStyle(mainPin, ':after').getPropertyValue('border-top-width'), 10);
+  var mainPinPositionTop = getComputedStyle(mainPin).getPropertyValue('top');
+  var mainPinPositionLeft = getComputedStyle(mainPin).getPropertyValue('left');
+  var mainPinPointerHeight = 80;
   var noticeAddress = document.querySelector('#address');
   var offers = [];
 
@@ -40,10 +43,10 @@
 
   function getPinPosition(firstRun) {
     var pinX = mainPin.offsetLeft;
-    var pinY = mainPin.offsetTop + mainPinHeight / 2;
+    var pinY = mainPin.offsetTop;
 
     if (!firstRun) {
-      pinY = mainPin.offsetTop + mainPinHeight / 2 + mainPinPointerHeight;
+      pinY = mainPin.offsetTop + mainPinPointerHeight / 2;
     }
     noticeAddress.value = pinX + ', ' + pinY;
     return {x: pinX, y: pinY};
@@ -61,8 +64,8 @@
     var borders = {
       minX: 0,
       maxX: MAP_PINS.offsetWidth,
-      minY: 150 - mainPinHeight / 2 - mainPinPointerHeight,
-      maxY: 500 - mainPinHeight / 2 - mainPinPointerHeight
+      minY: 150 - mainPinPointerHeight / 2,
+      maxY: 500 - mainPinPointerHeight / 2
     };
 
     var onMouseMove = function (moveEvt) {
@@ -81,7 +84,7 @@
       var dialogX = Math.min(Math.max((mainPin.offsetLeft - shift.x), borders.minX), borders.maxX);
       var dialogY = Math.min(Math.max((mainPin.offsetTop - shift.y), borders.minY), borders.maxY);
 
-      noticeAddress.value = dialogX + ', ' + (dialogY + mainPinHeight / 2 + mainPinPointerHeight);
+      noticeAddress.value = dialogX + ', ' + (dialogY + mainPinPointerHeight / 2);
 
       mainPin.style.left = dialogX + 'px';
       mainPin.style.top = dialogY + 'px';
@@ -110,8 +113,9 @@
   function enableMap() {
     MAP.classList.remove('map--faded');
     window.filter.activate();
-
     window.form.switchOnForm();
+
+    enableMapFilter();
 
     window.backend.load(function (data) {
       offers = data;
@@ -122,16 +126,37 @@
 
   }
 
-  getPinPosition(true);
-
-  mainPin.addEventListener('mousedown', dragMainPin);
-
   function disableMap() {
     window.card.clearCard();
     window.util.removeChildren(MAP_PINS, '.map__pin:not(.map__pin--main)');
     MAP.classList.add('map--faded');
+
+    mainPin.style.top = mainPinPositionTop;
+    mainPin.style.left = mainPinPositionLeft;
+
     getPinPosition(true);
+
+    disableMapFilters();
   }
+
+  function enableMapFilter() {
+    var mapFilterFields = MAP_FILTERS.querySelectorAll('.map__filter, .feature');
+    for (var i = 0; i < mapFilterFields.length; i++) {
+      mapFilterFields[i].disabled = false;
+    }
+  }
+
+  function disableMapFilters() {
+    var mapFilterFields = MAP_FILTERS.querySelectorAll('.map__filter, .feature');
+    for (var i = 0; i < mapFilterFields.length; i++) {
+      mapFilterFields[i].disabled = true;
+    }
+  }
+
+  getPinPosition(true);
+  disableMapFilters();
+
+  mainPin.addEventListener('mousedown', dragMainPin);
 
   window.map = {
     getPinPosition: getPinPosition,
