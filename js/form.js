@@ -49,11 +49,7 @@
     var suitableCapacity = roomCapability[noticeRoomNumber.value];
 
     for (var i = 0; i < noticeRoomCapacity.options.length; i++) {
-      if (suitableCapacity.indexOf(noticeRoomCapacity.options[i].value) === -1) {
-        noticeRoomCapacity.options[i].disabled = true;
-      } else {
-        noticeRoomCapacity.options[i].disabled = false;
-      }
+      noticeRoomCapacity.options[i].disabled = suitableCapacity.indexOf(noticeRoomCapacity.options[i].value) === -1;
     }
 
     if (suitableCapacity.indexOf(noticeRoomCapacity.value) === -1) {

@@ -52,7 +52,7 @@
     }
 
     for (var feature in mapFilters.features) {
-      if (mapFilters.features[feature] === true && ad.offer.features.indexOf(feature) === -1) {
+      if (mapFilters.features[feature] && ad.offer.features.indexOf(feature) === -1) {
         return false;
       }
     }
